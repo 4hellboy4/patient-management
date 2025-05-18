@@ -2,6 +2,8 @@ package com.yoshatech.patientservice.service;
 
 import com.yoshatech.patientservice.dto.PatientRequestDto;
 import com.yoshatech.patientservice.dto.PatientResponseDto;
+import com.yoshatech.patientservice.exception.EmailAlreadyExistsException;
+import com.yoshatech.patientservice.exception.UserNotFoundException;
 import com.yoshatech.patientservice.mapper.PatientMapper;
 import com.yoshatech.patientservice.model.Patient;
 import com.yoshatech.patientservice.repository.PatientRepository;
@@ -10,7 +12,9 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -25,13 +29,34 @@ public class PatientService {
     }
 
     public PatientResponseDto createPatient(PatientRequestDto patientRequest) {
-        if (patientRepository.existsByEmail(patientRequest.getEmail())) {
-            throw new EmailAlreadyExistsException("A patient with this email " + patientRequest.getEmail() + " already exists" );
-        }
+        doesEmailExist(patientRequest.getEmail());
 
         Patient newPatient = PatientMapper.toPatient(patientRequest);
         patientRepository.save(newPatient);
 
         return PatientMapper.toDto(newPatient);
+    }
+
+    public PatientResponseDto updatePatient(UUID id, PatientRequestDto patientRequest) {
+        Patient patient = patientRepository.findById(id).orElseThrow(
+                () -> new UserNotFoundException("Patient with id " + id + " not found")
+        );
+
+        doesEmailExist(patientRequest.getEmail());
+
+        patient.setName(patientRequest.getName());
+        patient.setAddress(patientRequest.getAddress());
+        patient.setEmail(patientRequest.getEmail());
+        patient.setDateOfBirth(LocalDate.parse(patientRequest.getDateOfBirth()));
+
+        patientRepository.save(patient);
+
+        return PatientMapper.toDto(patient);
+    }
+
+    public void doesEmailExist(String email) {
+        if (patientRepository.existsByEmail(email)) {
+            throw new EmailAlreadyExistsException("A patient with this email " + email + " already exists" );
+        }
     }
 }

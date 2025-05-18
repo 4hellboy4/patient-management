@@ -1,0 +1,12 @@
+### POST request to update patient info
+PUT http://localhost:4000/api/patients/123e4567-e89b-12d3-a456-426614174001
+Content-Type: application/json
+
+{
+  "name": "Bebra",
+  "email": "test2@example.com",
+  "address": "Moscow Bebrinsk 121",
+  "dateOfBirth": "1981-01-01"
+}
+
+###

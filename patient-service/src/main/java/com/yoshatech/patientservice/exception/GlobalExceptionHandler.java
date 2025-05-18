@@ -27,10 +27,19 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(EmailAlreadyExistsException.class)
     public ResponseEntity<Map<String, String>> handleEmailAlreadyExistsException(EmailAlreadyExistsException ex) {
-        log.warn("Email already exists: {}", ex.getMessage()  );
+        log.warn("Email already exists: {}", ex.getMessage());
 
         Map<String, String> error = new HashMap<>();
-        error.put("error", ex.getMessage());
+        error.put("message", "Email already exists");
+        return ResponseEntity.badRequest().body(error);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleUserNotFoundException(UserNotFoundException ex) {
+        log.warn("User not found: {}", ex.getMessage());
+
+        Map<String, String> error = new HashMap<>();
+        error.put("message", "User not found");
         return ResponseEntity.badRequest().body(error);
     }
 }
