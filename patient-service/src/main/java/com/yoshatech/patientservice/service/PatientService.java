@@ -29,7 +29,7 @@ public class PatientService {
     }
 
     public PatientResponseDto createPatient(PatientRequestDto patientRequest) {
-        doesEmailExist(patientRequest.getEmail());
+        doesEmailExist(patientRequest.getEmail(), null);
 
         Patient newPatient = PatientMapper.toPatient(patientRequest);
         patientRepository.save(newPatient);
@@ -42,7 +42,7 @@ public class PatientService {
                 () -> new UserNotFoundException("Patient with id " + id + " not found")
         );
 
-        doesEmailExist(patientRequest.getEmail());
+        doesEmailExist(patientRequest.getEmail(), id);
 
         patient.setName(patientRequest.getName());
         patient.setAddress(patientRequest.getAddress());
@@ -54,9 +54,23 @@ public class PatientService {
         return PatientMapper.toDto(patient);
     }
 
-    public void doesEmailExist(String email) {
-        if (patientRepository.existsByEmail(email)) {
-            throw new EmailAlreadyExistsException("A patient with this email " + email + " already exists" );
+    public void doesEmailExist(String email, UUID patientId) {
+        if (patientId == null) {
+            if (patientRepository.existsByEmail(email)) {
+                throw new EmailAlreadyExistsException("A patient with this email " + email + " already exists" );
+            }
+        } else {
+            if (patientRepository.existsByEmailAndIdNot(email, patientId)) {
+                throw new EmailAlreadyExistsException("A patient with this email " + email + " already exists" );
+            }
         }
+    }
+
+    public void deletePatient(UUID id) {
+        Patient patient = patientRepository.findById(id).orElseThrow(
+                () -> new UserNotFoundException("Patient with id " + id + " not found")
+        );
+
+        patientRepository.delete(patient);
     }
 }
