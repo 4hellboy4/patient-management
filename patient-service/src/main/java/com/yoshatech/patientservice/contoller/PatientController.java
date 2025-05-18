@@ -2,6 +2,7 @@ package com.yoshatech.patientservice.contoller;
 
 import com.yoshatech.patientservice.dto.PatientRequestDto;
 import com.yoshatech.patientservice.dto.PatientResponseDto;
+import com.yoshatech.patientservice.dto.validators.CreatePatientValidationGroup;
 import com.yoshatech.patientservice.service.PatientService;
 import jakarta.validation.Valid;
 import jakarta.validation.groups.Default;
@@ -32,7 +33,7 @@ public class PatientController {
     }
 
     @PostMapping("/create-patient")
-    public ResponseEntity<PatientResponseDto> createPatient(@Valid @RequestBody PatientRequestDto patientRequestDto) {
+    public ResponseEntity<PatientResponseDto> createPatient(@Validated({Default.class, CreatePatientValidationGroup.class}) @RequestBody PatientRequestDto patientRequestDto) {
         log.info("Creating new patient with email: {}", patientRequestDto.getEmail());
 
         PatientResponseDto createdPatient = patientService.createPatient(patientRequestDto);

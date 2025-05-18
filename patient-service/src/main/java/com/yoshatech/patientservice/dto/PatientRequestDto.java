@@ -1,6 +1,7 @@
 package com.yoshatech.patientservice.dto;
 
 
+import com.yoshatech.patientservice.dto.validators.CreatePatientValidationGroup;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -16,7 +17,7 @@ public class PatientRequestDto {
     @Size(max = 50, message = "The name must not exceed 50 characters")
     private String name;
 
-    @NotBlank(message = "Name is Required")
+    @NotBlank(message = "Email is Required")
     @Email(message = "Email should be valid")
     private String email;
 
@@ -26,6 +27,6 @@ public class PatientRequestDto {
     @NotBlank(message = "Date of Birth is required")
     private String dateOfBirth;
 
-    @NotBlank(message = "Registered Date is required")
+    @NotBlank(groups = {CreatePatientValidationGroup.class}, message = "Registered Date is required")
     private String registeredDate;
 }
