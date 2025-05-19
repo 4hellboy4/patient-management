@@ -4,7 +4,8 @@ import com.yoshatech.patientservice.dto.PatientRequestDto;
 import com.yoshatech.patientservice.dto.PatientResponseDto;
 import com.yoshatech.patientservice.dto.validators.CreatePatientValidationGroup;
 import com.yoshatech.patientservice.service.PatientService;
-import jakarta.validation.Valid;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger. v3.oas.annotations.tags.Tag;
 import jakarta.validation.groups.Default;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/patients")
+@Tag( name = "Patient", description = "API for managing patients")
 @RequiredArgsConstructor
 @Slf4j
 public class PatientController {
@@ -25,6 +27,7 @@ public class PatientController {
     private final PatientService patientService;
 
     @GetMapping("/get-patients")
+    @Operation(summary = "Get all patients", description = "Retrieve a list of all patients")
     public ResponseEntity<List<PatientResponseDto>> getPatients() {
         log.info("Getting all the Patients");
         List<PatientResponseDto> patients = patientService.getPatients();
@@ -33,6 +36,7 @@ public class PatientController {
     }
 
     @PostMapping("/create-patient")
+    @Operation(summary = "Create a new patient", description = "Create a new patient with the provided details")
     public ResponseEntity<PatientResponseDto> createPatient(@Validated({Default.class, CreatePatientValidationGroup.class}) @RequestBody PatientRequestDto patientRequestDto) {
         log.info("Creating new patient with email: {}", patientRequestDto.getEmail());
 
@@ -42,6 +46,7 @@ public class PatientController {
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Updating the patient with the given ID", description = "Update the details of an existing patient")
     public ResponseEntity<PatientResponseDto> updatePatient(@PathVariable UUID id, @Validated({Default.class}) @RequestBody PatientRequestDto patientRequestDto) {
         log.info("Updating patient with id: {}", id);
 
@@ -51,6 +56,7 @@ public class PatientController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Deleting the patient with the given ID")
     public ResponseEntity<Void> deletePatient(@PathVariable UUID id) {
         log.info("Deleting patient with id: {}", id);
 
