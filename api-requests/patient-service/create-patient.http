@@ -3,11 +3,11 @@ POST http://localhost:4000/api/patients/create-patient
 Content-Type: application/json
 
 {
-  "name": "Sergei",
-  "email": "test@example.com",
-  "address": "Moscow Bebrinsk 121",
+  "name": "Sergei Glaozv",
+  "email": "bebra@example.com",
+  "address": "Moscow",
   "dateOfBirth": "1981-01-01",
-  "registeredDate": "2025-05-18"
+  "registeredDate": "2025-05-01"
 }
 
 ###

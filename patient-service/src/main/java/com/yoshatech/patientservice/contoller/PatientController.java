@@ -6,6 +6,7 @@ import com.yoshatech.patientservice.dto.validators.CreatePatientValidationGroup;
 import com.yoshatech.patientservice.service.PatientService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger. v3.oas.annotations.tags.Tag;
+import jakarta.transaction.Transactional;
 import jakarta.validation.groups.Default;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +38,7 @@ public class PatientController {
 
     @PostMapping("/create-patient")
     @Operation(summary = "Create a new patient", description = "Create a new patient with the provided details")
+    @Transactional
     public ResponseEntity<PatientResponseDto> createPatient(@Validated({Default.class, CreatePatientValidationGroup.class}) @RequestBody PatientRequestDto patientRequestDto) {
         log.info("Creating new patient with email: {}", patientRequestDto.getEmail());
 
