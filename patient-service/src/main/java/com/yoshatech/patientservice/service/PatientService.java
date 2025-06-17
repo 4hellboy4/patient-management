@@ -5,6 +5,7 @@ import com.yoshatech.patientservice.dto.PatientResponseDto;
 import com.yoshatech.patientservice.exception.EmailAlreadyExistsException;
 import com.yoshatech.patientservice.exception.UserNotFoundException;
 import com.yoshatech.patientservice.grpc.BillingServiceGrpcClient;
+import com.yoshatech.patientservice.kafka.KafkaProducer;
 import com.yoshatech.patientservice.mapper.PatientMapper;
 import com.yoshatech.patientservice.model.Patient;
 import com.yoshatech.patientservice.repository.PatientRepository;
@@ -26,6 +27,7 @@ public class PatientService {
 
     private final PatientRepository patientRepository;
     private final BillingServiceGrpcClient billingServiceGrpcClient;
+    private final KafkaProducer kafkaProducer;
 
     public List<PatientResponseDto> getPatients() {
         List<Patient> patients = patientRepository.findAll();
@@ -41,6 +43,8 @@ public class PatientService {
         patientRepository.save(newPatient);
 
         billingServiceGrpcClient.createBillingAccount(newPatient.getId().toString(), newPatient.getName(), newPatient.getEmail());
+
+        kafkaProducer.sendMessage(newPatient);
 
         return PatientMapper.toDto(newPatient);
     }
